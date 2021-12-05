@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/2/input";
 
 enum Move {
@@ -20,6 +21,7 @@ fn get_move_vec(text: &str) -> Vec<Move> {
     }).collect()
 }
 
+#[allow(dead_code)]
 pub fn solve1(text: &str) -> i32 {
     let move_vec = get_move_vec(text);
     
@@ -37,6 +39,7 @@ pub fn solve1(text: &str) -> i32 {
     return horizontal * depth;
 }
 
+#[allow(dead_code)]
 pub fn solve2(text: &str) -> i64 {
     let move_vec = get_move_vec(text);
     

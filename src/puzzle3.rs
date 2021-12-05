@@ -1,5 +1,5 @@
+#[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/3/input";
-
 
 enum BitFilter {
     Majority,
@@ -15,6 +15,7 @@ impl BitFilter {
     }
 }
 
+#[allow(dead_code)]
 pub fn solve1(text: &str) -> u32 {
     let line_len = text.lines().next().unwrap().len();
 
@@ -75,6 +76,7 @@ fn find_one(
     find_one(subset, idx + 1, bit_filter)
 }
 
+#[allow(dead_code)]
 pub fn solve2(text: &str) -> u32 {
     let lines: Vec<&str> = text.lines().map(|l| l.trim()).collect();
     let lines_copy = lines.clone();

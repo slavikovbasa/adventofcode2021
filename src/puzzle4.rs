@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+#[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/4/input";
 
 const BOARD_SIZE: usize = 5;
@@ -81,6 +82,7 @@ fn play_game1(drawn_nums: Vec<u32>, boards: &mut Vec<Board>) -> Option<(u32, usi
     return None;
 }
 
+#[allow(dead_code)]
 pub fn solve1(text: &str) -> u32 {
     let (drawn_nums, mut boards) = get_inputs(text);
     let (winner_num, winner_idx) = play_game1(drawn_nums, &mut boards).unwrap();
@@ -109,6 +111,7 @@ fn play_game2(drawn_nums: Vec<u32>, boards: &mut Vec<Board>) -> (u32, usize) {
     return *winners.last().unwrap();
 }
 
+#[allow(dead_code)]
 pub fn solve2(text: &str) -> u32 {
     let (drawn_nums, mut boards) = get_inputs(text);
     let (winner_num, winner_idx) = play_game2(drawn_nums, &mut boards);
