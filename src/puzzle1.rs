@@ -1,8 +1,15 @@
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/1/input";
 
+
 #[allow(dead_code)]
-pub fn solve(text: &str) -> u32 {
+pub fn solve1(text: &str) -> u32 {
+    0
+}
+
+
+#[allow(dead_code)]
+pub fn solve2(text: &str) -> u32 {
     let arr: Vec<u32> = text.lines().map(|x| x.trim().parse().unwrap()).collect();
 
     let mut total = 0;
