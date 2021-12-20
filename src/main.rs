@@ -1,11 +1,10 @@
-mod client;
-mod puzzle12;
-use puzzle12 as puzzle;
+use adventofcode::client;
+use adventofcode::day20 as day;
 
 fn main() {
-    let text = client::fetch(puzzle::URL);
+    let text = client::fetch(day::URL);
     // let text = "";
 
-    println!("res1: {}", puzzle::solve1(&text));
-    println!("res2: {}", puzzle::solve2(&text));
+    println!("res1: {}", day::solve1(&text));
+    println!("res2: {}", day::solve2(&text));
 }

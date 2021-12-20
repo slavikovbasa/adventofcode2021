@@ -195,9 +195,9 @@ pub fn solve1(text: &str) -> usize {
     );
     let mut sorted_points: Vec<Point> = all_points.into_iter().collect();
     sorted_points.sort_unstable_by_key(|p| p.0);
-    for p in sorted_points.iter() {
-        println!("{}", p);
-    }
+    // for p in sorted_points.iter() {
+    //     println!("{}", p);
+    // }
     sorted_points.len()
 }
 

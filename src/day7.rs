@@ -3,7 +3,7 @@ pub const URL: &str = "https://adventofcode.com/2021/day/7/input";
 
 
 fn get_fuel_cost(d: &[i32]) -> i32 {
-    d.iter().map(|d| (d * (d + 1) / 2).abs()).sum()
+    d.iter().map(|d| (d.abs() * (d.abs() + 1)) / 2).sum()
 }
 
 fn min_fuel_cost_recursive(
@@ -85,7 +85,7 @@ fn min_fuel_cost(
 
 
 #[allow(dead_code)]
-pub fn solve1(text: &str) -> (usize, i32) {
+pub fn solve1(text: &str) -> String {
     let mut positions: Vec<usize> = text.trim().split(',')
         .map(|i| i.parse().unwrap())
         .collect();
@@ -105,12 +105,13 @@ pub fn solve1(text: &str) -> (usize, i32) {
     }
 
 
-    min_fuel_cost(&positions, &behind_or_at, max_position)
+    let (dest, fuel_cost) = min_fuel_cost(&positions, &behind_or_at, max_position);
+    format!("({}, {})", dest, fuel_cost)
 }
 
 
 #[allow(dead_code)]
-pub fn solve2(text: &str) -> (usize, i32) {
+pub fn solve2(text: &str) -> String {
     let mut positions: Vec<usize> = text.trim().split(',')
         .map(|i| i.parse().unwrap())
         .collect();
@@ -124,5 +125,6 @@ pub fn solve2(text: &str) -> (usize, i32) {
         .map(|&p| p as i32 - dest as i32).collect();
 
     let fuel_cost = get_fuel_cost(&distances);
-    min_fuel_cost_recursive(dest, distances, fuel_cost, total, max_position)
+    let (dest, fuel_cost) = min_fuel_cost_recursive(dest, distances, fuel_cost, total, max_position);
+    format!("({}, {})", dest, fuel_cost)
 }
