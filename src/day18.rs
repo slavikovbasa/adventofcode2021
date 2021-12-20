@@ -1,23 +1,28 @@
-use std::{ops::Add, str::{FromStr, Chars}, fmt::Display};
+use std::{
+    fmt::Display,
+    ops::Add,
+    str::{Chars, FromStr},
+};
 
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/18/input";
 
-
 #[derive(Clone)]
 enum Number {
     Simple(u32),
-    Pair{ left: Box<Number>, right: Box<Number> },
+    Pair {
+        left: Box<Number>,
+        right: Box<Number>,
+    },
 }
-
 
 impl Number {
     fn add_left(&mut self, n: u32) {
         match self {
             Self::Simple(value) => {
                 *value += n;
-            },
-            Self::Pair{ left, .. } => {
+            }
+            Self::Pair { left, .. } => {
                 left.add_left(n);
             }
         }
@@ -27,8 +32,8 @@ impl Number {
         match self {
             Self::Simple(value) => {
                 *value += n;
-            },
-            Self::Pair{ right, .. } => {
+            }
+            Self::Pair { right, .. } => {
                 right.add_right(n);
             }
         }
@@ -45,14 +50,14 @@ impl Number {
     fn explode(&mut self, depth: u32) -> (u32, u32) {
         match self {
             Self::Simple(_) => (0, 0),
-            Self::Pair{ left, right } => {
+            Self::Pair { left, right } => {
                 if let Self::Simple(l_value) = **left {
                     if let Self::Simple(r_value) = **right {
                         if depth >= 4 {
                             *self = Self::Simple(0);
-                            return (l_value, r_value)
+                            return (l_value, r_value);
                         }
-                        return (0, 0)
+                        return (0, 0);
                     }
                 }
                 let (lv_left, lv_right) = left.explode(depth + 1);
@@ -77,17 +82,15 @@ impl Number {
                     return true;
                 }
                 false
-            },
-            Self::Pair{ left, right } => {
-                left.split() || right.split()
-            },
+            }
+            Self::Pair { left, right } => left.split() || right.split(),
         }
-    } 
+    }
 
     fn magnitude(&self) -> u32 {
         match self {
             Self::Simple(val) => *val,
-            Self::Pair{ left, right } => 3 * left.magnitude() + 2 * right.magnitude(),
+            Self::Pair { left, right } => 3 * left.magnitude() + 2 * right.magnitude(),
         }
     }
 }
@@ -98,8 +101,11 @@ impl Add for Number {
     fn add(self, other: Self) -> Self::Output {
         match &self {
             Self::Simple(_) => panic!("Cant add to simple number"),
-            Self::Pair{..} => {
-                let mut res = Number::Pair{ left: Box::new(self), right: Box::new(other) };
+            Self::Pair { .. } => {
+                let mut res = Number::Pair {
+                    left: Box::new(self),
+                    right: Box::new(other),
+                };
                 res.reduce();
                 res
             }
@@ -107,12 +113,11 @@ impl Add for Number {
     }
 }
 
-
 impl Display for Number {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Simple(n) => write!(f, "{}", n),
-            Self::Pair{ left, right } => {
+            Self::Pair { left, right } => {
                 write!(f, "[{}, {}]", left, right)
             }
         }
@@ -126,10 +131,12 @@ fn parse_number(s: &mut Chars) -> Result<Number, String> {
         assert_eq!(s.next().unwrap(), ',');
         let right = parse_number(s)?;
         assert_eq!(s.next().unwrap(), ']');
-        return Ok(Number::Pair{ left: Box::new(left), right: Box::new(right) });
+        return Ok(Number::Pair {
+            left: Box::new(left),
+            right: Box::new(right),
+        });
     }
-    let num = c.to_digit(10)
-        .ok_or("expected a digit")?;
+    let num = c.to_digit(10).ok_or("expected a digit")?;
     Ok(Number::Simple(num))
 }
 
@@ -141,19 +148,20 @@ impl FromStr for Number {
     }
 }
 
-
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> u32 {
     let nums: Vec<Number> = text.lines().map(|l| l.trim().parse().unwrap()).collect();
 
-    nums.into_iter().reduce(|acc, n| acc + n).unwrap().magnitude()
+    nums.into_iter()
+        .reduce(|acc, n| acc + n)
+        .unwrap()
+        .magnitude()
 }
-
 
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> u32 {
     let nums: Vec<Number> = text.lines().map(|l| l.trim().parse().unwrap()).collect();
-    
+
     let mut max = 0;
     for (i, n1) in nums.iter().enumerate() {
         for (j, n2) in nums.iter().enumerate() {
@@ -169,4 +177,3 @@ pub fn solve2(text: &str) -> u32 {
     }
     max
 }
-

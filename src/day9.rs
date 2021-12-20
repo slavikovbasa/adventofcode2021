@@ -1,28 +1,29 @@
-use std::collections::{HashSet};
+use std::collections::HashSet;
 
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/9/input";
 
-const ZERO_CODE: u8 = 0x30; 
+const ZERO_CODE: u8 = 0x30;
 
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> u32 {
-    let map: Vec<Vec<u8>> = text.lines()
+    let map: Vec<Vec<u8>> = text
+        .lines()
         .map(|l| l.bytes().map(|b| b - ZERO_CODE).collect())
         .collect();
     let mut sum = 0;
     for (i, row) in map.iter().enumerate() {
         for (j, &point) in row.iter().enumerate() {
-            if i > 0 && map[i-1][j] <= point {
+            if i > 0 && map[i - 1][j] <= point {
                 continue;
             }
-            if i < map.len() - 1 && map[i+1][j] <= point {
+            if i < map.len() - 1 && map[i + 1][j] <= point {
                 continue;
             }
-            if j > 0 && map[i][j-1] <= point {
+            if j > 0 && map[i][j - 1] <= point {
                 continue;
             }
-            if j < row.len() - 1 && map[i][j+1] <= point {
+            if j < row.len() - 1 && map[i][j + 1] <= point {
                 continue;
             }
             sum += point as u32 + 1;
@@ -53,7 +54,6 @@ impl Point {
     }
 }
 
-
 fn populate_basin_from(
     p: Point,
     basin: &mut HashSet<Point>,
@@ -65,15 +65,18 @@ fn populate_basin_from(
         return;
     }
     basin.insert(p.clone());
-    p.neighbors(last_point).into_iter()
+    p.neighbors(last_point)
+        .into_iter()
         .filter(|n| map[n.0][n.1] != cur_value)
-        .for_each(|point| { populate_basin_from(point, basin, map, last_point); });
+        .for_each(|point| {
+            populate_basin_from(point, basin, map, last_point);
+        });
 }
-
 
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> usize {
-    let map: Vec<Vec<u8>> = text.lines()
+    let map: Vec<Vec<u8>> = text
+        .lines()
         .map(|l| l.bytes().map(|b| b - ZERO_CODE).collect())
         .collect();
     let last_point = Point(map.len() - 1, map.first().unwrap().len() - 1);
@@ -91,7 +94,7 @@ pub fn solve2(text: &str) -> usize {
             }
             let mut b = HashSet::new();
             populate_basin_from(p, &mut b, &map, &last_point);
-            if !b.is_empty(){
+            if !b.is_empty() {
                 basins.push(b.len());
                 points.extend(b);
             }
@@ -100,4 +103,3 @@ pub fn solve2(text: &str) -> usize {
     basins.sort_unstable();
     basins.iter().rev().take(3).product()
 }
-

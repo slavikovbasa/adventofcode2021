@@ -3,7 +3,6 @@ use std::{fmt::Display, str::FromStr};
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/20/input";
 
-
 struct Image {
     pixels: Vec<Vec<Pixel>>,
     outside: Pixel,
@@ -41,17 +40,17 @@ impl Image {
     fn enhanced(&self, (i, j): (i32, i32), algorithm: &Vec<Pixel>) -> Pixel {
         let ver = [i - 1, i, i + 1];
         let hor = [j - 1, j, j + 1];
-    
-        let mut kernel = ver.iter().flat_map(|i| {
-            hor.iter().map(|j| self.get((*i, *j)))
-        });
-    
+
+        let mut kernel = ver
+            .iter()
+            .flat_map(|i| hor.iter().map(|j| self.get((*i, *j))));
+
         let mut num = kernel.next().unwrap().as_digit();
         kernel.for_each(|p| {
             num <<= 1;
             num |= p.as_digit();
         });
-        
+
         algorithm[num]
     }
 
@@ -66,7 +65,7 @@ impl Image {
         }
         self.outside = match self.outside {
             Pixel::Dark => algorithm[0b000000000],
-            Pixel::Light => algorithm[0b111111111]
+            Pixel::Light => algorithm[0b111111111],
         };
         self.pixels = new_pixels;
     }
@@ -77,8 +76,11 @@ impl FromStr for Image {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let pixels = s.lines().map(line_to_pixels).collect();
-    
-        Ok(Image{ pixels, outside: Pixel::Dark })
+
+        Ok(Image {
+            pixels,
+            outside: Pixel::Dark,
+        })
     }
 }
 
@@ -94,7 +96,6 @@ impl Display for Image {
         writeln!(f, "{}", res)
     }
 }
-
 
 #[derive(Clone, Copy)]
 enum Pixel {
@@ -121,13 +122,14 @@ impl Display for Pixel {
     }
 }
 
-
 fn line_to_pixels(line: &str) -> Vec<Pixel> {
-    line.chars().map(|c| match c {
-        '#' => Pixel::Light,
-        '.' => Pixel::Dark,
-        _ => panic!("unexpected symbol {}", c),
-    }).collect()
+    line.chars()
+        .map(|c| match c {
+            '#' => Pixel::Light,
+            '.' => Pixel::Dark,
+            _ => panic!("unexpected symbol {}", c),
+        })
+        .collect()
 }
 
 fn get_inputs(text: &str) -> (Vec<Pixel>, Image) {
@@ -149,7 +151,6 @@ pub fn solve1(text: &str) -> usize {
     image.count_lit()
 }
 
-
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> usize {
     let (algorithm, mut image) = get_inputs(text);
@@ -160,4 +161,3 @@ pub fn solve2(text: &str) -> usize {
 
     image.count_lit()
 }
-

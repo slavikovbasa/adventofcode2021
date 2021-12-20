@@ -26,7 +26,7 @@ impl BitReader {
         let res = if bit_i + amount <= bits {
             (self.b[byte_i] << bit_i) >> (bits - amount)
         } else {
-            ((self.b[byte_i] << bit_i) | (self.b[byte_i+1] >> (bits - bit_i))) >> (bits - amount)
+            ((self.b[byte_i] << bit_i) | (self.b[byte_i + 1] >> (bits - bit_i))) >> (bits - amount)
         };
         self.curr += amount;
         res
@@ -51,8 +51,9 @@ impl FromStr for BitReader {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes: Vec<u8> = (0..s.len()).step_by(2)
-            .map(|i| u8::from_str_radix(&s[i..i+2], 16).unwrap())
+        let bytes: Vec<u8> = (0..s.len())
+            .step_by(2)
+            .map(|i| u8::from_str_radix(&s[i..i + 2], 16).unwrap())
             .collect();
 
         Ok(BitReader::new(bytes))
@@ -71,7 +72,7 @@ enum OpType {
 
 enum Payload {
     Literal(u64),
-    Op(OpType, Vec<Packet>)
+    Op(OpType, Vec<Packet>),
 }
 
 impl Payload {
@@ -87,7 +88,7 @@ impl Payload {
                     }
                 }
                 Self::Literal(value)
-            },
+            }
             op_typ => {
                 let mut subpackets = Vec::new();
 
@@ -99,7 +100,7 @@ impl Payload {
                         while b.curr() < end {
                             subpackets.push(Packet::from(b));
                         }
-                    },
+                    }
                     _ => {
                         let len_in_packets = b.read_u32(11);
                         for _ in 0..len_in_packets {
@@ -135,27 +136,42 @@ impl Packet {
         let typ = header & 0x07;
 
         let payload = Payload::from(typ, b);
-        Packet{ version, payload }
+        Packet { version, payload }
     }
 
     fn eval(&self) -> u64 {
         match &self.payload {
             Payload::Literal(v) => *v,
-            Payload::Op(op_type, subpackets) => {
-                match op_type {
-                    OpType::Sum => subpackets.iter().fold(0, |acc, p| acc + p.eval()),
-                    OpType::Product => subpackets.iter().fold(1, |acc, p| acc * p.eval()),
-                    OpType::Min => subpackets.iter().map(|p| p.eval()).min().unwrap(),
-                    OpType::Max => subpackets.iter().map(|p| p.eval()).max().unwrap(),
-                    OpType::Gt => if subpackets[0].eval() > subpackets[1].eval() {1} else {0},
-                    OpType::Lt => if subpackets[0].eval() < subpackets[1].eval() {1} else {0},
-                    OpType::Eq => if subpackets[0].eval() == subpackets[1].eval() {1} else {0},
+            Payload::Op(op_type, subpackets) => match op_type {
+                OpType::Sum => subpackets.iter().fold(0, |acc, p| acc + p.eval()),
+                OpType::Product => subpackets.iter().fold(1, |acc, p| acc * p.eval()),
+                OpType::Min => subpackets.iter().map(|p| p.eval()).min().unwrap(),
+                OpType::Max => subpackets.iter().map(|p| p.eval()).max().unwrap(),
+                OpType::Gt => {
+                    if subpackets[0].eval() > subpackets[1].eval() {
+                        1
+                    } else {
+                        0
+                    }
                 }
-            }
+                OpType::Lt => {
+                    if subpackets[0].eval() < subpackets[1].eval() {
+                        1
+                    } else {
+                        0
+                    }
+                }
+                OpType::Eq => {
+                    if subpackets[0].eval() == subpackets[1].eval() {
+                        1
+                    } else {
+                        0
+                    }
+                }
+            },
         }
     }
 }
-
 
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> u64 {
@@ -175,11 +191,9 @@ pub fn solve1(text: &str) -> u64 {
     sum
 }
 
-
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> u64 {
     let mut b: BitReader = text.trim().parse().unwrap();
     let packet = Packet::from(&mut b);
     packet.eval()
 }
-

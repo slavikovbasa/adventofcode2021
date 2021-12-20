@@ -3,10 +3,8 @@ use std::collections::{HashMap, HashSet};
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/12/input";
 
-
 const START: &str = "start";
 const END: &str = "end";
-
 
 fn is_small(cave: &str) -> bool {
     cave.chars().any(|c| c.is_lowercase())
@@ -20,14 +18,10 @@ fn get_inputs(text: &str) -> HashMap<&str, HashSet<&str>> {
         let from = parts.next().unwrap();
         let to = parts.next().unwrap();
         if from != END && to != START {
-            caves.entry(from)
-                .or_insert(HashSet::new())
-                .insert(to);
+            caves.entry(from).or_insert(HashSet::new()).insert(to);
         }
         if from != START && to != END {
-            caves.entry(to)
-                .or_insert(HashSet::new())
-                .insert(from);
+            caves.entry(to).or_insert(HashSet::new()).insert(from);
         }
     }
     caves
@@ -46,7 +40,7 @@ pub fn solve1(text: &str) -> usize {
                 stack.pop();
                 visited.pop();
                 continue;
-            },
+            }
             Some(v) => v,
         };
         if curr == END {
@@ -55,7 +49,8 @@ pub fn solve1(text: &str) -> usize {
         }
         if let Some(next_caves) = caves.get(curr) {
             visited.push(curr);
-            let next_stack: Vec<&str> = next_caves.iter()
+            let next_stack: Vec<&str> = next_caves
+                .iter()
                 .filter(|c| !is_small(c) || !visited.contains(&c))
                 .map(|&c| c)
                 .collect();
@@ -64,7 +59,6 @@ pub fn solve1(text: &str) -> usize {
     }
     paths.iter().count()
 }
-
 
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> usize {
@@ -85,7 +79,7 @@ pub fn solve2(text: &str) -> usize {
                 }
                 stack.pop();
                 continue;
-            },
+            }
             Some(v) => v,
         };
         if curr == END {
@@ -97,7 +91,8 @@ pub fn solve2(text: &str) -> usize {
         }
         if let Some(next_caves) = caves.get(curr) {
             visited.push(curr);
-            let next_stack: Vec<&str> = next_caves.iter()
+            let next_stack: Vec<&str> = next_caves
+                .iter()
                 .filter(|c| !is_small(c) || !visited.contains(&c) || visited_small_twice.is_none())
                 .map(|&c| c)
                 .collect();
@@ -106,7 +101,6 @@ pub fn solve2(text: &str) -> usize {
     }
     paths.iter().count()
 }
-
 
 // fn solve_recursive<'a>(
 //     curr: &'a str,

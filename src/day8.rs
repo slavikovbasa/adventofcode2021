@@ -5,7 +5,13 @@ pub const URL: &str = "https://adventofcode.com/2021/day/8/input";
 
 #[derive(Default)]
 struct Segments {
-    a: u8, b: u8, c: u8, d: u8, e: u8, f: u8, g: u8,
+    a: u8,
+    b: u8,
+    c: u8,
+    d: u8,
+    e: u8,
+    f: u8,
+    g: u8,
 }
 
 const A_BYTE: u8 = 0x61;
@@ -26,12 +32,22 @@ fn solve_for_line(inputs: Vec<&str>, outputs: Vec<&str>) -> usize {
 
     for n in inputs {
         match n.len() {
-            2 => { digits[1] = str_to_num(n); },
-            3 => { digits[7] = str_to_num(n); },
-            4 => { digits[4] = str_to_num(n); },
+            2 => {
+                digits[1] = str_to_num(n);
+            }
+            3 => {
+                digits[7] = str_to_num(n);
+            }
+            4 => {
+                digits[4] = str_to_num(n);
+            }
             5 => (),
-            6 => { len6.push(n); },
-            7 => { digits[8] = str_to_num(n); },
+            6 => {
+                len6.push(n);
+            }
+            7 => {
+                digits[8] = str_to_num(n);
+            }
             _ => panic!("bad number of segments"),
         };
     }
@@ -65,14 +81,18 @@ fn solve_for_line(inputs: Vec<&str>, outputs: Vec<&str>) -> usize {
     s.d = digits[0] ^ digits[8];
     s.e = digits[9] ^ digits[8];
     s.f = digits[1] ^ s.c;
-    
+
     digits[2] = s.a ^ s.c ^ s.d ^ s.e ^ s.g;
     digits[5] = s.a ^ s.b ^ s.d ^ s.f ^ s.g;
 
-    let num_to_digit: HashMap<_, _> = digits.iter().enumerate()
-        .map(|(i, &num)| (num, i)).collect();
+    let num_to_digit: HashMap<_, _> = digits
+        .iter()
+        .enumerate()
+        .map(|(i, &num)| (num, i))
+        .collect();
 
-    outputs.iter()
+    outputs
+        .iter()
         .map(|&s| str_to_num(s))
         .map(|num| num_to_digit.get(&num).unwrap())
         .rev()
@@ -81,16 +101,20 @@ fn solve_for_line(inputs: Vec<&str>, outputs: Vec<&str>) -> usize {
         .sum()
 }
 
-
 fn get_uniq(text: &str) -> usize {
-    text.lines().map(
-        |l| {
-            l.split('|').skip(1).next().unwrap().trim()
-                .split_whitespace().filter(|w| w.len() == 2 || w.len() == 3 || w.len() == 4 || w.len() == 7).count()
-        }
-    ).sum()
+    text.lines()
+        .map(|l| {
+            l.split('|')
+                .skip(1)
+                .next()
+                .unwrap()
+                .trim()
+                .split_whitespace()
+                .filter(|w| w.len() == 2 || w.len() == 3 || w.len() == 4 || w.len() == 7)
+                .count()
+        })
+        .sum()
 }
-
 
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> usize {
@@ -107,8 +131,8 @@ fn line_to_tuple<'a>(line: &str) -> (Vec<&str>, Vec<&str>) {
 
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> usize {
-    text.lines().map(line_to_tuple)
+    text.lines()
+        .map(line_to_tuple)
         .map(|(inputs, outputs)| solve_for_line(inputs, outputs))
         .sum()
 }
-

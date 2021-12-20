@@ -13,33 +13,44 @@ enum Fold {
 struct Point(usize, usize);
 
 fn fold(coords: HashSet<Point>, fold: &Fold) -> HashSet<Point> {
-    coords.iter().map(|p| {
-        match fold {
-            Fold::X(n) if p.0 > *n =>  Point(2 * n - p.0, p.1),
+    coords
+        .iter()
+        .map(|p| match fold {
+            Fold::X(n) if p.0 > *n => Point(2 * n - p.0, p.1),
             Fold::Y(n) if p.1 > *n => Point(p.0, 2 * n - p.1),
             _ => Point(p.0, p.1),
-        }
-    }).collect()
+        })
+        .collect()
 }
 
 fn get_inputs(text: &str) -> (HashSet<Point>, Vec<Fold>) {
     let mut parts = text.split("\n\n");
-    let coords: HashSet<Point> = parts.next().unwrap().lines().map(|l| {
-        let mut coords = l.split(',');
-        let x = coords.next().unwrap().parse().unwrap();
-        let y = coords.next().unwrap().parse().unwrap();
-        Point(x, y)
-    }).collect();
-    let folds: Vec<Fold> = parts.next().unwrap().lines().map(|l| {
-        let mut instr = l.trim_start_matches("fold along ").split('=');
-        let dir = instr.next().unwrap();
-        let n = instr.next().unwrap().parse().unwrap();
-        match dir {
-            "x" => Fold::X(n),
-            "y" => Fold::Y(n),
-            _ => panic!("bad fold instruction")
-        }
-    }).collect();
+    let coords: HashSet<Point> = parts
+        .next()
+        .unwrap()
+        .lines()
+        .map(|l| {
+            let mut coords = l.split(',');
+            let x = coords.next().unwrap().parse().unwrap();
+            let y = coords.next().unwrap().parse().unwrap();
+            Point(x, y)
+        })
+        .collect();
+    let folds: Vec<Fold> = parts
+        .next()
+        .unwrap()
+        .lines()
+        .map(|l| {
+            let mut instr = l.trim_start_matches("fold along ").split('=');
+            let dir = instr.next().unwrap();
+            let n = instr.next().unwrap().parse().unwrap();
+            match dir {
+                "x" => Fold::X(n),
+                "y" => Fold::Y(n),
+                _ => panic!("bad fold instruction"),
+            }
+        })
+        .collect();
 
     (coords, folds)
 }

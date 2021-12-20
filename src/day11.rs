@@ -10,7 +10,11 @@ struct Octopus(usize, usize);
 impl Octopus {
     fn get_all(last_octopus: &Octopus) -> Vec<Octopus> {
         (0..=last_octopus.0)
-            .map(|i| (0..=last_octopus.1).map(|j| Octopus(i, j)).collect::<Vec<Octopus>>())
+            .map(|i| {
+                (0..=last_octopus.1)
+                    .map(|j| Octopus(i, j))
+                    .collect::<Vec<Octopus>>()
+            })
             .flatten()
             .collect()
     }
@@ -21,12 +25,12 @@ impl Octopus {
         let x = self.1 as i32;
         let ver_ns = vec![y, y - 1, y + 1];
         let hor_ns = vec![x, x - 1, x + 1];
-    
+
         for i in ver_ns {
             for j in hor_ns.iter() {
                 if i == self.0 as i32 && *j == self.1 as i32 {
                     continue;
-                } 
+                }
                 if i >= 0 && *j >= 0 && i <= last_octopus.0 as i32 && *j <= last_octopus.1 as i32 {
                     ns.push(Octopus(i as usize, *j as usize))
                 }
@@ -40,7 +44,6 @@ impl Octopus {
         &mut energies[self.0][self.1]
     }
 }
-
 
 fn proceed(energies: &mut Vec<Vec<u32>>) -> usize {
     let mut flashed = 0;
@@ -61,7 +64,11 @@ fn proceed(energies: &mut Vec<Vec<u32>>) -> usize {
     }
 
     energies.iter_mut().for_each(|row| {
-        row.iter_mut().for_each(|e| if *e > MAX_ENERGY { *e = 0; })
+        row.iter_mut().for_each(|e| {
+            if *e > MAX_ENERGY {
+                *e = 0;
+            }
+        })
     });
 
     flashed
@@ -76,14 +83,13 @@ fn get_inputs(text: &str) -> Vec<Vec<u32>> {
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> usize {
     let mut grid = get_inputs(text);
-    
+
     let mut total_flashed = 0;
     for _ in 0..STEPS {
         total_flashed += proceed(&mut grid);
     }
     total_flashed
 }
-
 
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> u64 {
@@ -100,4 +106,3 @@ pub fn solve2(text: &str) -> u64 {
         }
     }
 }
-

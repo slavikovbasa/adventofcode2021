@@ -14,21 +14,25 @@ struct Board {
 impl Board {
     fn from_lines<'a, T>(lines: &mut T) -> Board
     where
-        T: Iterator<Item=&'a str>
+        T: Iterator<Item = &'a str>,
     {
         let mut rows = vec![HashSet::new(); BOARD_SIZE];
         let mut cols = vec![HashSet::new(); BOARD_SIZE];
-        lines.take(BOARD_SIZE).map(
-            |l| l.trim().split_whitespace().map(|s| s.parse().unwrap())
-        ).enumerate().for_each(
-            |(i, l)| l.enumerate().for_each(
-                |(j, num)| {
+        lines
+            .take(BOARD_SIZE)
+            .map(|l| l.trim().split_whitespace().map(|s| s.parse().unwrap()))
+            .enumerate()
+            .for_each(|(i, l)| {
+                l.enumerate().for_each(|(j, num)| {
                     rows[i].insert(num);
                     cols[j].insert(num);
-                }
-            )
-        );
-        Board { rows, cols, is_winner: false }
+                })
+            });
+        Board {
+            rows,
+            cols,
+            is_winner: false,
+        }
     }
 
     fn cross_out(&mut self, num: u32) -> bool {
@@ -49,16 +53,17 @@ impl Board {
 
         false
     }
-    
+
     fn sum(&self) -> u32 {
         self.rows.iter().flatten().sum()
     }
 }
 
-
 fn get_inputs(text: &str) -> (Vec<u32>, Vec<Board>) {
     let mut lines = text.lines();
-    let drawn_nums: Vec<u32> = lines.next().unwrap()
+    let drawn_nums: Vec<u32> = lines
+        .next()
+        .unwrap()
         .split(',')
         .map(|c| c.parse().unwrap())
         .collect();
@@ -90,7 +95,6 @@ pub fn solve1(text: &str) -> u32 {
 
     winner_num * winner_board.sum()
 }
-
 
 fn play_game2(drawn_nums: Vec<u32>, boards: &mut Vec<Board>) -> (u32, usize) {
     let boards_len = boards.len();

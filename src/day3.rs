@@ -34,25 +34,22 @@ pub fn solve1(text: &str) -> u32 {
             };
         }
     }
-    let gamma_rate: String = counts.iter()
-        .map(|x| if *x > total_len / 2 {'1'} else {'0'})
+    let gamma_rate: String = counts
+        .iter()
+        .map(|x| if *x > total_len / 2 { '1' } else { '0' })
         .collect();
     let gamma = u32::from_str_radix(&gamma_rate, 2).unwrap();
     let epsilon = !gamma & ((1 << line_len) - 1);
     gamma * epsilon
 }
 
-
 fn bit_partition<'a>(lines: &Vec<&'a str>, idx: usize) -> (Vec<&'a str>, Vec<&'a str>) {
-    lines.iter().partition(|s| s.chars().nth(idx).unwrap() == '0')
+    lines
+        .iter()
+        .partition(|s| s.chars().nth(idx).unwrap() == '0')
 }
 
-
-fn find_one(
-    lines: Vec<&str>,
-    idx: usize,
-    bit_filter: BitFilter,
-) -> Vec<&str> {
+fn find_one(lines: Vec<&str>, idx: usize, bit_filter: BitFilter) -> Vec<&str> {
     if lines.len() <= 1 || idx > lines.iter().next().unwrap().len() {
         return lines;
     }
@@ -62,7 +59,7 @@ fn find_one(
     let ones_len = ones.len() as isize;
 
     let cmp = bit_filter.cmp(zeroes_len, ones_len);
-    let subset = if cmp > 0  {
+    let subset = if cmp > 0 {
         zeroes
     } else if cmp < 0 {
         ones
@@ -81,26 +78,17 @@ pub fn solve2(text: &str) -> u32 {
     let lines: Vec<&str> = text.lines().map(|l| l.trim()).collect();
     let lines_copy = lines.clone();
 
-    let oxygen_rate = find_one(
-        lines,
-        0,
-        BitFilter::Majority,
-    );
+    let oxygen_rate = find_one(lines, 0, BitFilter::Majority);
     if oxygen_rate.len() != 1 {
         panic!("oxygen - something went wrong")
     }
     let oxygen_rate = oxygen_rate[0];
 
-    let co2_rate = find_one(
-        lines_copy,
-        0,
-        BitFilter::Minority,
-    );
+    let co2_rate = find_one(lines_copy, 0, BitFilter::Minority);
     if co2_rate.len() != 1 {
         panic!("co2 - something went wrong")
     }
     let co2_rate = co2_rate[0];
-
 
     let oxygen_rate = u32::from_str_radix(oxygen_rate, 2).unwrap();
     let co2_rate = u32::from_str_radix(co2_rate, 2).unwrap();

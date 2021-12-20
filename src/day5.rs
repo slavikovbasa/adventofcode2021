@@ -1,4 +1,4 @@
-use std::{str::FromStr, num::ParseIntError, collections::HashMap};
+use std::{collections::HashMap, num::ParseIntError, str::FromStr};
 
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/5/input";
@@ -37,7 +37,7 @@ struct Line {
 }
 
 impl Line {
-    fn is_grid(&self) -> bool{
+    fn is_grid(&self) -> bool {
         self.dir_x == 0 || self.dir_y == 0
     }
 }
@@ -49,8 +49,9 @@ impl Iterator for Line {
         let add_x = self.i as i32 * self.dir_x;
         let add_y = self.i as i32 * self.dir_y;
         if add_x.abs() > (self.end.0 - self.start.0).abs()
-            || add_y.abs() > (self.end.1 - self.start.1).abs() {
-            return None
+            || add_y.abs() > (self.end.1 - self.start.1).abs()
+        {
+            return None;
         }
         self.i += 1;
         Some(Point(self.start.0 + add_x, self.start.1 + add_y))
@@ -65,7 +66,7 @@ impl FromStr for Line {
         let start = points.next().unwrap().parse()?;
         let end = points.next().unwrap().parse()?;
         let (rate_x, rate_y) = get_change_rates(&start, &end);
-        Ok(Line{
+        Ok(Line {
             start,
             end,
             i: 0,
@@ -78,7 +79,11 @@ impl FromStr for Line {
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> usize {
     let mut space = HashMap::new();
-    for line in text.lines().map(|l| l.parse::<Line>().unwrap()).filter(|l| l.is_grid()) {
+    for line in text
+        .lines()
+        .map(|l| l.parse::<Line>().unwrap())
+        .filter(|l| l.is_grid())
+    {
         for point in line {
             let count = space.entry(point).or_insert(0);
             *count += 1;

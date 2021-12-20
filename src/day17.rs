@@ -3,11 +3,7 @@ use std::collections::HashSet;
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/17/input";
 
-
-pub fn launch(
-    (mut v_x, mut v_y): (i32, i32),
-    target: ((i32, i32), (i32, i32)),
-) -> bool {
+pub fn launch((mut v_x, mut v_y): (i32, i32), target: ((i32, i32), (i32, i32))) -> bool {
     let (x_range, y_range) = target;
     let is_before = |x, y| x < x_range.0 || y > y_range.1;
     let is_after = |x, y| x > x_range.1 || y < y_range.0;
@@ -24,14 +20,19 @@ pub fn launch(
     !is_after(x, y)
 }
 
-
 fn get_inputs(text: &str) -> ((i32, i32), (i32, i32)) {
     let mut parts = text.trim().trim_start_matches("target area: ").split(", ");
     let mut x = parts.next().unwrap().trim_start_matches("x=").split("..");
-    let x_range = (x.next().unwrap().parse().unwrap(), x.next().unwrap().parse().unwrap());
+    let x_range = (
+        x.next().unwrap().parse().unwrap(),
+        x.next().unwrap().parse().unwrap(),
+    );
 
     let mut y = parts.next().unwrap().trim_start_matches("y=").split("..");
-    let y_range = (y.next().unwrap().parse().unwrap(), y.next().unwrap().parse().unwrap());
+    let y_range = (
+        y.next().unwrap().parse().unwrap(),
+        y.next().unwrap().parse().unwrap(),
+    );
 
     (x_range, y_range)
 }
@@ -74,7 +75,6 @@ pub fn solve1(text: &str) -> i32 {
     (y_range.0.abs() * (y_range.0.abs() - 1)) / 2
 }
 
-
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> usize {
     let mut velocities = HashSet::new();
@@ -91,4 +91,3 @@ pub fn solve2(text: &str) -> usize {
 
     velocities.len()
 }
-

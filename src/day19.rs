@@ -1,8 +1,11 @@
-use std::{fmt::Display, collections::{HashSet, HashMap}, ops::{Sub, Add}};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Display,
+    ops::{Add, Sub},
+};
 
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/19/input";
-
 
 fn cos_disc(n: u32) -> i32 {
     if n % 2 == 1 {
@@ -27,7 +30,7 @@ impl Point {
     fn sum_abs(&self) -> i32 {
         self.0.abs() + self.1.abs() + self.2.abs()
     }
- 
+
     fn rotate_x(&self, n: u32) -> Self {
         Point(
             self.0,
@@ -75,7 +78,6 @@ impl Display for Point {
     }
 }
 
-
 #[derive(Clone, Debug)]
 struct Scanner {
     id: usize,
@@ -101,21 +103,20 @@ fn vectors(points: &HashSet<Point>) -> HashMap<Point, (Point, Point)> {
 }
 
 impl Scanner {
-    fn try_adjust_for(
-        &self,
-        base: &Scanner,
-        threshold: usize,
-    ) -> Option<(HashSet<Point>, Point)> {
+    fn try_adjust_for(&self, base: &Scanner, threshold: usize) -> Option<(HashSet<Point>, Point)> {
         let base_points = &base.points;
         let base_vectors = vectors(base_points);
         for rot_x in 0..4 {
             for rot_y in 0..4 {
                 for rot_z in 0..4 {
-                    let rotated = self.points.iter()
+                    let rotated = self
+                        .points
+                        .iter()
                         .map(|p| p.rotate_x(rot_x).rotate_y(rot_y).rotate_z(rot_z))
                         .collect();
                     let vectors = vectors(&rotated);
-                    let common_vectors: HashSet<_> = base_vectors.keys()
+                    let common_vectors: HashSet<_> = base_vectors
+                        .keys()
                         .filter(|k| vectors.contains_key(*k))
                         .collect();
 
@@ -128,7 +129,8 @@ impl Scanner {
 
                     let diff = base_point - point;
 
-                    let translated_points: HashSet<_> = rotated.into_iter().map(|p| p + diff).collect();
+                    let translated_points: HashSet<_> =
+                        rotated.into_iter().map(|p| p + diff).collect();
                     return Some((translated_points, diff));
                 }
             }
@@ -149,14 +151,28 @@ impl Display for Scanner {
 }
 
 fn get_inputs(text: &str) -> Vec<Scanner> {
-    text.split("\n\n").enumerate().map(|(id, scanner)| {
-        let points = scanner.lines().skip(1).map(|point| {
-            let mut parts = point.split(',')
-                .map(|coord| coord.parse::<i32>().unwrap());
-            Point(parts.next().unwrap(), parts.next().unwrap(), parts.next().unwrap())
-        }).collect();
-        Scanner { id, points, pos: Point(0, 0, 0) }
-    }).collect()
+    text.split("\n\n")
+        .enumerate()
+        .map(|(id, scanner)| {
+            let points = scanner
+                .lines()
+                .skip(1)
+                .map(|point| {
+                    let mut parts = point.split(',').map(|coord| coord.parse::<i32>().unwrap());
+                    Point(
+                        parts.next().unwrap(),
+                        parts.next().unwrap(),
+                        parts.next().unwrap(),
+                    )
+                })
+                .collect();
+            Scanner {
+                id,
+                points,
+                pos: Point(0, 0, 0),
+            }
+        })
+        .collect()
 }
 
 fn adjust_scanners(scanners: &mut Vec<Scanner>) {
@@ -177,7 +193,7 @@ fn adjust_scanners(scanners: &mut Vec<Scanner>) {
                     s.pos = pos;
                     stack.push(s.clone());
                     visited.insert(s.id);
-                },
+                }
             }
         }
     }
@@ -189,10 +205,9 @@ pub fn solve1(text: &str) -> usize {
 
     adjust_scanners(&mut scanners);
 
-    let all_points = scanners.into_iter().fold(
-        HashSet::new(),
-        |acc, s| acc.union(&s.points).cloned().collect()
-    );
+    let all_points = scanners.into_iter().fold(HashSet::new(), |acc, s| {
+        acc.union(&s.points).cloned().collect()
+    });
     let mut sorted_points: Vec<Point> = all_points.into_iter().collect();
     sorted_points.sort_unstable_by_key(|p| p.0);
     // for p in sorted_points.iter() {
@@ -201,14 +216,19 @@ pub fn solve1(text: &str) -> usize {
     sorted_points.len()
 }
 
-
 #[allow(dead_code)]
 pub fn solve2(text: &str) -> i32 {
     let mut scanners: Vec<Scanner> = get_inputs(text);
 
     adjust_scanners(&mut scanners);
-    scanners.iter().flat_map(
-        |s1| scanners.iter().map(|s2| (s1.pos - s2.pos).sum_abs()).collect::<Vec<_>>()
-    ).max().unwrap()
+    scanners
+        .iter()
+        .flat_map(|s1| {
+            scanners
+                .iter()
+                .map(|s2| (s1.pos - s2.pos).sum_abs())
+                .collect::<Vec<_>>()
+        })
+        .max()
+        .unwrap()
 }
-
