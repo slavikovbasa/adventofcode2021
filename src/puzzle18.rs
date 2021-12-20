@@ -7,7 +7,6 @@ pub const URL: &str = "https://adventofcode.com/2021/day/18/input";
 #[derive(Clone)]
 enum Number {
     Simple(u32),
-
     Pair{ left: Box<Number>, right: Box<Number> },
 }
 

@@ -22,14 +22,12 @@ impl BitReader {
         assert!(amount <= bits);
 
         let (byte_i, bit_i) = (self.curr / bits, self.curr % bits);
-        // println!("bytes: {} {} {}", self.b[byte_i], self.b[byte_i + 1], bit_i);
 
         let res = if bit_i + amount <= bits {
             (self.b[byte_i] << bit_i) >> (bits - amount)
         } else {
             ((self.b[byte_i] << bit_i) | (self.b[byte_i+1] >> (bits - bit_i))) >> (bits - amount)
         };
-        // println!("read: {}({} from {})", res, amount, self.curr);
         self.curr += amount;
         res
     }

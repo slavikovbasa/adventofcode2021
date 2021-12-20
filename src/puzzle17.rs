@@ -3,18 +3,6 @@ use std::collections::HashSet;
 #[allow(dead_code)]
 pub const URL: &str = "https://adventofcode.com/2021/day/17/input";
 
-// fn pos_at(t: u32, vel: i32, acc: i32) -> i32 {
-//     let t = t as i32;
-//     vel * t + (acc * t * (t - 1)) / 2
-// }
-
-// fn pos_x(t: u32, vel_x: i32) -> i32 {
-//     pos_at(t, vel_x, -vel_x.signum() * ((t as i32 <= vel_x.abs()) as i32))
-// }
-
-// fn pos_y(t: u32, vel_y: i32) -> i32 {
-//     pos_at(t, vel_y, -1)
-// }
 
 pub fn launch(
     (mut v_x, mut v_y): (i32, i32),
@@ -77,13 +65,13 @@ fn max_y_vel(y_range: (i32, i32)) -> i32 {
     assert!(y_range.0 < y_range.1);
     assert!(y_range.0 < 0);
 
-    (y_range.0.abs() * (y_range.0.abs() - 1)) / 2
+    y_range.0.abs() - 1
 }
 
 #[allow(dead_code)]
 pub fn solve1(text: &str) -> i32 {
     let (_, y_range) = get_inputs(text);
-    max_y_vel(y_range)
+    (y_range.0.abs() * (y_range.0.abs() - 1)) / 2
 }
 
 
@@ -92,18 +80,12 @@ pub fn solve2(text: &str) -> usize {
     let mut velocities = HashSet::new();
 
     let target = get_inputs(text);
-    println!("{} {} {} {}", min_x_vel(target.0), max_x_vel(target.0), min_y_vel(target.1), max_y_vel(target.1));
 
-    let mut i = 0;
     for vel_x in min_x_vel(target.0)..=max_x_vel(target.0) {
         for vel_y in min_y_vel(target.1)..=max_y_vel(target.1) {
-            if i % 1000 == 0 {
-                println!("{}", i);
-            }
             if launch((vel_x, vel_y), target) {
                 velocities.insert((vel_x, vel_y));
             }
-            i += 1;
         }
     }
 

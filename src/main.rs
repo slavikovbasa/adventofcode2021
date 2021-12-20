@@ -1,6 +1,6 @@
 mod client;
-mod puzzle20;
-use puzzle20 as puzzle;
+mod puzzle12;
+use puzzle12 as puzzle;
 
 fn main() {
     let text = client::fetch(puzzle::URL);
