@@ -121,46 +121,6 @@ fn get_inputs(text: &str) -> Vec<Step> {
         .collect()
 }
 
-#[allow(dead_code)]
-pub fn solve12(text: &str) -> u64 {
-    let steps = get_inputs(text);
-    let mut cubes = vec![vec![vec![Action::Off; 100]; 100]; 100];
-
-    for s in steps {
-        for x in s.cuboid.0 .0..s.cuboid.0 .1 {
-            if x < -50 || x > 50 {
-                continue;
-            }
-            for y in s.cuboid.1 .0..s.cuboid.1 .1 {
-                if y < -50 || y > 50 {
-                    continue;
-                }
-                for z in s.cuboid.2 .0..s.cuboid.2 .1 {
-                    if z < -50 || z > 50 {
-                        continue;
-                    }
-                    let i = (x + 50) as usize;
-                    let j = (y + 50) as usize;
-                    let k = (z + 50) as usize;
-                    cubes[i][j][k] = s.action;
-                }
-            }
-        }
-    }
-
-    let mut count = 0;
-    for sq in cubes {
-        for row in sq {
-            for i in row {
-                if let Action::On = i {
-                    count += 1;
-                }
-            }
-        }
-    }
-    count
-}
-
 fn volume_after_steps(steps: Vec<Step>) -> u64 {
     let mut visited: Vec<Step> = Vec::new();
     let mut total_vol = 0;
